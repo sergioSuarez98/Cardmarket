@@ -103,16 +103,19 @@ public function buyCard(Request $request)
     if($cards) {
 
         for ($i=0; $i <count($cards) ; $i++){
-             //echo $cards[4];
+            
             if($cards[$i]->sale){
-             for ($j=0; $j <count($cards[$i]->sale) ; $j++) { 
+             for ($j=0; $j <count($cards[$i]->sale) ; $j++) {  
+                $idCreador= $cards[$i]->sale[$j]->user_id;
+                //echo $idCreador;
+                $userCreador = User::where('id',$idCreador)->get()->first();
                 $response[] = [
                     "name" => $cards[$i]->name,
                     "copies" => $cards[$i]->sale[$j]->copies,
                     "total_price" => $cards[$i]->sale[$j]->price,
-                    "nombre admin" => $cards[$i]->user->username
-                ];
+                    "nombre" => $userCreador->username
 
+                     ];
 
             }
         }   

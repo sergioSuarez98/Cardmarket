@@ -54,7 +54,7 @@ class SaleController extends Controller
     /**
      * Crea una venta en funcion del id de la carta que se desea.
      */
-    public function createSale(Request $request, $card_id)
+    public function createSale(Request $request, $card_id,$token)
     {
 
     	$response="";
@@ -71,7 +71,7 @@ class SaleController extends Controller
     	// Si hay un json, crear el soldado
     	if($card && $data) {
 
-    	$user=User::find($data->user_id);
+    	
 
     		if($user){
     			$sale = new Sale();

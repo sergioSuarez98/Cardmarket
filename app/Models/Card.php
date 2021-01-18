@@ -21,5 +21,10 @@ class Card extends Model
     {
         return $this->hasMany(Sale::class)->orderBy('price', 'asc');
     }
+    public function sales()
+    {
+        return $this->belongsTo(Sale::class);
+    }
+
     
 }
