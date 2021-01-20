@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\Card;
 use App\Models\User;
+use \Firebase\JWT\JWT;
 
+use App\Http\Helpers\MyJWT;
 
 class SaleController extends Controller
 {
@@ -25,7 +27,7 @@ class SaleController extends Controller
     	// Decodificar el json
     	$data = json_decode($data);
     	$cards = Card::Where('name', $data->name)->get();
-        
+       
     	//echo $cards;
     	// Si hay un json, crear el soldado
     	if($cards) {
@@ -66,19 +68,20 @@ class SaleController extends Controller
     	// Decodificar el json
     	$data = json_decode($data);
     	$card = Card::Find($card_id);
-        $user = User::where('api_token',$token)->get()->first();
-    	//echo $card;
+        $key = MyJWT::getKey();
+       $headers = getallheaders();
+       $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	// Si hay un json, crear el soldado
     	if($card && $data) {
 
     	
 
-    		if($user){
+    		if($decoded->id){
     			$sale = new Sale();
 
     			$sale->price = $data->price;
     			$sale->copies = $data->copies;
-    			$sale->user_id = $user->id;
+    			$sale->user_id = $decoded->id;
     			$sale->card_id = $card_id;
 
 

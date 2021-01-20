@@ -29,14 +29,14 @@ Route::post('/users/admin/{id}', [UserController::class, 'makeAdmin']);
 Route::post('/users/forgotPassword', [UserController::class, 'forgotPassword']);
 
 
-Route::post('/cards/create/{token}', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
-Route::post('/cards/update/{id}/{token}', [CardController::class, 'updateCard'])->middleware(EnsureTokenIsValid::class);
+Route::post('/cards/create', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
+Route::post('/cards/update/{id}', [CardController::class, 'updateCard'])->middleware(EnsureTokenIsValid::class);
 
 Route::get('/cards/buy', [CardController::class, 'buyCard']);
 
-Route::get('/sales/find/{token}', [SaleController::class, 'findCard'])->middleware(CheckToken::class);
-Route::post('/sales/sell/{id}/{token}', [SaleController::class, 'createSale'])->middleware(CheckToken::class);
+Route::get('/sales/find', [SaleController::class, 'findCard'])->middleware(CheckToken::class);
+Route::post('/sales/sell/{id}', [SaleController::class, 'createSale'])->middleware(CheckToken::class);
 
-Route::post('/collections/create/{token}', [CollectionController::class, 'createCollection'])->middleware(EnsureTokenIsValid::class);
-Route::post('/collections/update/{id}/{token}', [CollectionController::class, 'updateCollection'])->middleware(EnsureTokenIsValid::class);
+Route::post('/collections/create', [CollectionController::class, 'createCollection'])->middleware(EnsureTokenIsValid::class);
+Route::post('/collections/update/{id}', [CollectionController::class, 'updateCollection'])->middleware(EnsureTokenIsValid::class);
 

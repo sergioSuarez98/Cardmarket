@@ -6,6 +6,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
+
 class UserController extends Controller
 {
     /**
@@ -28,7 +31,7 @@ class UserController extends Controller
     		$user = new User();
 
     		//Validar que el rol del usuario no sea admin de primeras
-    		if($data->role!="Admin"){
+    		
 
     		$user->username = $data->username;
     		$user->password = Hash::make($data->password);
@@ -42,9 +45,7 @@ class UserController extends Controller
 			    $response=$e->getMessage();
 				}
 
-    		}else{
-    			$response="Rol no valido, tiene que ser profesional o inidividual";
-    		}
+    		
     		
 
     		
@@ -72,13 +73,17 @@ class UserController extends Controller
         // Decodificar el json
         $data = json_decode($data);
         $user = User::Where('username', $data->username)->get()->first();
+        $payload = MyJWT::generatePayload($user);
+        $key = MyJWT::getKey();
+
+        $jwt = JWT::encode($payload, $key);
        
         if($user){
         // Si hay un json, crear el soldado
         if(Hash::check($data->password,$user->password)) {
                 $response = "Usuario y contraseña correctos";
                 
-                $user->api_token = Str::random(60);
+                $user->api_token = $jwt;
             try{
             $user->save();
                 
