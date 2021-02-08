@@ -8,13 +8,18 @@ use App\Models\Collection;
 use App\Models\cardCollection;
 use App\Models\Sale;
 use App\Models\User;
+
+
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
+
 class CardController extends Controller
 {
     /**
      * Funcion que crea una carta, si no existe la coleccion la crea, solo con su nombre, y si existe añade la carta a ella. Tambien autocompleta 
      la tabla intermedia
      */
-     public function createCard(Request $request,$token)
+     public function createCard(Request $request)
      {
 
          $response="";
@@ -28,20 +33,51 @@ class CardController extends Controller
 
          $data = json_decode($data);
 
+       $key = MyJWT::getKey();
+       $headers = getallheaders();
+       $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
 
          if($data) {
           $card = new Card();
     		//Validar que el rol del usuario no sea admin de primeras
           $collection = Collection::where('name', $data->collection)->get()->first();
-          $user = User::where('api_token',$token)->get()->first();
+
 
           if($collection){
 
+<<<<<<< HEAD
            $card->name = $data->name;
            $card->description = $data->description;
            $card->collection=$data->collection;
            $card->user_id=$user->id;
 
+=======
+             $card->name = $data->name;
+             $card->description = $data->description;
+             $card->collection=$data->collection;
+             $card->user_id=$decoded->id;
+
+             try{
+                $card->save();
+                $card_id=$card->id;
+                $response="OK";
+            } catch(\Exception $e){
+                $response=$e->getMessage();
+            }
+
+            $cardCollection = new cardCollection();
+            $cardCollection->card_id =$card_id;
+            $cardCollection->collection_id =  $collection->id;
+            $cardCollection->save();
+        }else{
+
+           $collection= new Collection();
+           $collection->name = $data->collection;
+           $card->name = $data->name;
+           $card->description = $data->description;
+           $card->collection=$data->collection;
+           $card->user_id=$decoded->id;
+>>>>>>> 035bc135be5e861ae8dec3106a8612408c6ce35c
            try{
             $card->save();
             $card_id=$card->id;

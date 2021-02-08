@@ -7,9 +7,12 @@ use App\Models\Collection;
 use App\Models\Card;
 use App\Models\cardCollection;
 use App\Models\User;
+
+use \Firebase\JWT\JWT;
+use App\Http\Helpers\MyJWT;
 class CollectionController extends Controller
 {
-    public function createCollection(Request $request, $token)
+    public function createCollection(Request $request)
     {
         /**
      * Funcion que crea una coleccion, si no existe la carta la crea, solo con su nombre, y si existe añade la carta a ella. Tambien autocompleta 
@@ -26,10 +29,11 @@ class CollectionController extends Controller
 
     	// Decodificar el json
     	$data = json_decode($data);
-        $user = User::where('api_token',$token)->get()->first();
-
+        $key = MyJWT::getKey();
+       $headers = getallheaders();
+       $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	
-    	if($data && $user) {
+    	if($data && $decoded->id) {
     		$collection = new Collection();
     		//Validar que el rol del usuario no sea admin de primeras
     		$card = Card::where('name', $data->card)->get()->first();
@@ -57,7 +61,7 @@ class CollectionController extends Controller
 
     			$card= new Card();
     			$card->name = $data->card;
-    			$card->user_id=$user->id;
+    			$card->user_id=$decoded->id;
     			$card->collection = $data->name;
     			$collection->name = $data->name;
     			$collection->creation_date = $data->date;

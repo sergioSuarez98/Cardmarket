@@ -5,7 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
+use \Firebase\JWT\JWT;
 
+use App\Http\Helpers\MyJWT;
 class EnsureTokenIsValid
 {
     /**
@@ -18,31 +20,26 @@ class EnsureTokenIsValid
    public function handle($request, Closure $next)
     {
 
-        /*$data = $request->getContent();
+        
+        
+            $key = MyJWT::getKey();
 
-        // Decodificar el json
-        $data = json_decode($data);
-        echo $data->token;*/
-        //echo $request->token;
-        if($request->token){
+            $headers = getallheaders();
 
-            $user = User::Where('api_token',$request->token)->get()->first();
-            
-            if($user){
+            $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+            echo $decoded->role;
+            if($decoded){
                 //si el usuario es admin entra a la ruta de la api
-                if($user->role == "Admin"){
+                if($decoded->role == "Admin"){
                     return $next($request);
 
-            }else{
+            }   else{
                abort(403,"User isn't admin");
             }
-        }else{
-            abort(403,"Token Erroneo");
-        }
-
         
 
-       
-    }
-}
+        }else{
+            abort(403,"User isn't admin");
+        }
+     }   
 }

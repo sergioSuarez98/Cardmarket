@@ -16,24 +16,37 @@ class CheckToken
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+  public function handle($request, Closure $next)
     {
+
+        /*$data = $request->getContent();
+
+        // Decodificar el json
+        $data = json_decode($data);
+        echo $data->token;*/
         //echo $request->token;
         if($request->token){
 
-            $user = User::Where('api_token',$request->token)->get()->first();
+            $key = MyJWT::getKey();
+
+            $headers = getallheaders();
+
+            $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
             
-            if($user){
-                //si el usuario es individual o profesional entra a la ruta de la api
-                if($user->role == "Individual" || $user->role == "Profesional"){
+            if($decoded){
+                //si el usuario es admin entra a la ruta de la api
+                if($decoded->role == "Individual" || $decoded->role == "Profesional"){
                     return $next($request);
 
             }else{
-               abort(403,"User isn't valid");
+               abort(403,"User isn't admin");
             }
         }else{
             abort(403,"Token Erroneo");
         }
-    }
+
+        
+
+       
     }
 }
