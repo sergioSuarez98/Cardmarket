@@ -17,19 +17,19 @@ class CardController extends Controller
      public function createCard(Request $request,$token)
      {
 
-       $response="";
+         $response="";
 
-       $card_id=0;
-       $collection_id=0;
-
-
-       $data = $request->getContent();
+         $card_id=0;
+         $collection_id=0;
 
 
-       $data = json_decode($data);
+         $data = $request->getContent();
 
 
-       if($data) {
+         $data = json_decode($data);
+
+
+         if($data) {
           $card = new Card();
     		//Validar que el rol del usuario no sea admin de primeras
           $collection = Collection::where('name', $data->collection)->get()->first();
@@ -37,45 +37,45 @@ class CardController extends Controller
 
           if($collection){
 
-             $card->name = $data->name;
-             $card->description = $data->description;
-             $card->collection=$data->collection;
-             $card->user_id=$user->id;
-
-             try{
-                $card->save();
-                $card_id=$card->id;
-                $response="OK";
-            } catch(\Exception $e){
-                $response=$e->getMessage();
-            }
-
-            $cardCollection = new cardCollection();
-            $cardCollection->card_id =$card_id;
-            $cardCollection->collection_id =  $collection->id;
-            $cardCollection->save();
-        }else{
-
-           $collection= new Collection();
-           $collection->name = $data->collection;
            $card->name = $data->name;
            $card->description = $data->description;
            $card->collection=$data->collection;
            $card->user_id=$user->id;
+
            try{
             $card->save();
-            $collection->save();
             $card_id=$card->id;
-            $collection_id=$collection->id;
             $response="OK";
         } catch(\Exception $e){
             $response=$e->getMessage();
         }
+
         $cardCollection = new cardCollection();
         $cardCollection->card_id =$card_id;
-        $cardCollection->collection_id = $collection->id; 
-        $cardCollection->save(); 
+        $cardCollection->collection_id =  $collection->id;
+        $cardCollection->save();
+    }else{
+
+     $collection= new Collection();
+     $collection->name = $data->collection;
+     $card->name = $data->name;
+     $card->description = $data->description;
+     $card->collection=$data->collection;
+     $card->user_id=$user->id;
+     try{
+        $card->save();
+        $collection->save();
+        $card_id=$card->id;
+        $collection_id=$collection->id;
+        $response="OK";
+    } catch(\Exception $e){
+        $response=$e->getMessage();
     }
+    $cardCollection = new cardCollection();
+    $cardCollection->card_id =$card_id;
+    $cardCollection->collection_id = $collection->id; 
+    $cardCollection->save(); 
+}
 }else{
   $response="No data";
 }
@@ -97,35 +97,55 @@ public function buyCard(Request $request)
 
         // Decodificar el json
     $data = json_decode($data);
-    $cards = Card::Where('name', $data->name)->get();
+   
     
         // Si hay un json, crear el soldado
-    if($cards) {
-
-        for ($i=0; $i <count($cards) ; $i++){
-            
-            if($cards[$i]->sale){
-             for ($j=0; $j <count($cards[$i]->sale) ; $j++) {  
-                $idCreador= $cards[$i]->sale[$j]->user_id;
+    if ($data) {
+        echo "Se encuentra data en el body"."\n";
+        $cards = Card::Where('name', $data->name)->get();
+        //echo $cards."\n";
+        if(!empty($cards)) {
+            echo "Carta encontrada"."\n";
+            for ($i=0; $i <count($cards) ; $i++){
+                echo "entra al for\n";
+                if(empty($cards[$i]->sale)){
+                    echo "Entra al if de sale ";
+                   
+                    for ($j=0; $j <count($cards[$i]->sale) ; $j++) {  
+                    
+                     echo "El id del creador es: ".$cards[$i]->sale[$j]->user_id."\n";
+                    $idCreador= $cards[$i]->sale[$j]->user_id;
                 //echo $idCreador;
-                $userCreador = User::where('id',$idCreador)->get()->first();
-                $response[] = [
-                    "name" => $cards[$i]->name,
-                    "copies" => $cards[$i]->sale[$j]->copies,
-                    "total_price" => $cards[$i]->sale[$j]->price,
-                    "nombre" => $userCreador->username
+                    $userCreador = User::where('id',$idCreador)->get()->first();
+                     //echo "La carta es: ".$cards[$i];
+                    echo $cards[$i]->name;
+                    $response[] = [
+                        "name" => $cards[$i]->name,
+                        "copies" => $cards[$i]->sale[$j]->copies,
+                        "total_price" => $cards[$i]->sale[$j]->price,
+                        "nombre" => $userCreador->username
 
-                     ];
+                    ];
 
-            }
-        }   
+                }
+            }else{
+                echo "La carta no está a la venta"."\n";
+                $response="No sales"."\n";
+            }  
+        }
+
+    }else{
+        echo "No se encuentra carta con ese nombre"."\n";
+        $response="No hay carta con ese nombre"."\n";
     }
 
 }else{
-    $response="No hay carta con ese nombre";
+    echo "No se encuentra data"."\n";
+    $response="No data";
+
 }
 
-            //Validar que el rol del usuario no sea admin de primeras
+
 
 return response($response);
 
