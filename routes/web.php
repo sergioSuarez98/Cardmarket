@@ -14,7 +14,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
+});
+
+Route::get('/registro', function () {
+    return view('signup');
+});
+Route::get('/inicio', function () {
+    return view('index');
+});
+Route::get('/data', function () {
+    return view('data');
 });
 Route::get('/no-authorized', function () {
     return "Que te follen";
