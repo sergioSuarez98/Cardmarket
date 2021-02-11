@@ -8,18 +8,13 @@ use App\Models\Collection;
 use App\Models\cardCollection;
 use App\Models\Sale;
 use App\Models\User;
-
-
-use \Firebase\JWT\JWT;
-use App\Http\Helpers\MyJWT;
-
 class CardController extends Controller
 {
     /**
      * Funcion que crea una carta, si no existe la coleccion la crea, solo con su nombre, y si existe añade la carta a ella. Tambien autocompleta 
      la tabla intermedia
      */
-     public function createCard(Request $request)
+     public function createCard(Request $request,$token)
      {
 
          $response="";
@@ -33,51 +28,20 @@ class CardController extends Controller
 
          $data = json_decode($data);
 
-       $key = MyJWT::getKey();
-       $headers = getallheaders();
-       $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
 
          if($data) {
           $card = new Card();
     		//Validar que el rol del usuario no sea admin de primeras
           $collection = Collection::where('name', $data->collection)->get()->first();
-
+          $user = User::where('api_token',$token)->get()->first();
 
           if($collection){
 
-<<<<<<< HEAD
            $card->name = $data->name;
            $card->description = $data->description;
            $card->collection=$data->collection;
            $card->user_id=$user->id;
 
-=======
-             $card->name = $data->name;
-             $card->description = $data->description;
-             $card->collection=$data->collection;
-             $card->user_id=$decoded->id;
-
-             try{
-                $card->save();
-                $card_id=$card->id;
-                $response="OK";
-            } catch(\Exception $e){
-                $response=$e->getMessage();
-            }
-
-            $cardCollection = new cardCollection();
-            $cardCollection->card_id =$card_id;
-            $cardCollection->collection_id =  $collection->id;
-            $cardCollection->save();
-        }else{
-
-           $collection= new Collection();
-           $collection->name = $data->collection;
-           $card->name = $data->name;
-           $card->description = $data->description;
-           $card->collection=$data->collection;
-           $card->user_id=$decoded->id;
->>>>>>> 035bc135be5e861ae8dec3106a8612408c6ce35c
            try{
             $card->save();
             $card_id=$card->id;
@@ -133,15 +97,19 @@ public function buyCard(Request $request)
 
         // Decodificar el json
     $data = json_decode($data);
-   
+    
+
     
         // Si hay un json, crear el soldado
     if ($data) {
         echo "Se encuentra data en el body"."\n";
+
+        if (isset($data->name)) {
+        echo "El data es correcto";
         $cards = Card::Where('name', $data->name)->get();
-        //echo $cards."\n";
-        if(!empty($cards)) {
+         if(!empty($cards)) {
             echo "Carta encontrada"."\n";
+
             for ($i=0; $i <count($cards) ; $i++){
                 echo "entra al for\n";
                 if(empty($cards[$i]->sale)){
@@ -174,6 +142,11 @@ public function buyCard(Request $request)
         echo "No se encuentra carta con ese nombre"."\n";
         $response="No hay carta con ese nombre"."\n";
     }
+        } else {
+            echo "Data incorrecto, tienes que introducir un name\n";
+        }
+        //echo $cards."\n";
+       
 
 }else{
     echo "No se encuentra data"."\n";
@@ -185,7 +158,8 @@ public function buyCard(Request $request)
 
 return response($response);
 
-}
+}   
+
 /**
  * Update de las cartas que se crean desde la coleccion
  */
