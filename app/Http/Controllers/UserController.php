@@ -87,7 +87,7 @@ class UserController extends Controller
 
             try{
             $user->save();
-            $response = "Usuario y contraseña correctos. Token:".$jwt;    
+            $response = "Ok.Token:".$jwt;    
             } catch(\Exception $e){
                 $response=$e->getMessage();
             }

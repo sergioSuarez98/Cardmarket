@@ -26,6 +26,13 @@ Route::get('/inicio', function () {
 Route::get('/data', function () {
     return view('data');
 });
+Route::get('/login', function () {
+    return view('login');
+});
+
+
+
+
 Route::get('/no-authorized', function () {
     return "Que te follen";
 });
@@ -33,4 +40,4 @@ Route::get('/no-authorized', function () {
 Route::get('ajax',function() {
    return view('message');
 });
-Route::post('/getmsg','AjaxController@index');
+

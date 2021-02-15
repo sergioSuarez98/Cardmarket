@@ -125,36 +125,22 @@
     <div class="topnav">
       <a  href="inicio">Home</a>
       <a href="#news">Buscar carta</a>
-      <a class="registro">Registrarse</a>
-      <a href="login">Logear</a>
+      <a href="registro">Registrarse</a>
+      <a href="active">Logear</a>
     </div>
   </div>
-  <h1 class="display-2">Sign Up</h1>
-  <form method="POST">        
+  <h1 class="display-2">Log In</h1>
+  <form method="post">        
 
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Username</label>
       <input id="username" type="text" name="username" class="form-control-sm" id="exampleFormControlInput1" placeholder="name@example.com">
     </div>
 
-    <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">Email </label>
-      <input id="email" type="email" name="email" class="form-control-sm" id="exampleFormControlInput1" placeholder="name@example.com">
-    </div>
+  
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Password</label>
       <input id="password" type="password" name="password" class="form-control-sm" id="exampleFormControlInput1" >
-    </div>
-
-
-    <div>
-      <label for="exampleFormControlInput1" class="form-label">Role</label>
-      <select id="role" name="role" class="form-select-sm " aria-label=".form-select-lg example">
-        <option selected>Open this select menu</option>
-        <option value="Individual">Individual</option>
-        <option value="Admin">Admin</option>
-        <option value="Profesional">Profesional</option>
-      </select>
     </div>
 
     <div>
@@ -163,34 +149,35 @@
 
   </form>
 
-
   <script>
     $("#enviar").click(function(e){
       e.preventDefault(); 
       console.log("Boton pulsado")
 
       $username = $('#username').val();
-      $email = $('#email').val();
+   
       $password = $('#password').val();
-      $role = $('#role').val();
+     
       var user = {   
 
         username: $username,
-        email: $email,
+      
         password: $password,
-        role: $role
+        
       }
 
-      $.post("http://localhost/Cardmarket/public/api/users/create",
+      $.post("http://localhost/Cardmarket/public/api/users/login",
         JSON.stringify(user)
         ,
 
         function(data, status){
           
-          var splitted = data.split(" ");
-
-          if (splitted[0] == "OK") {
-                    window.location.href = "http://localhost/Cardmarket/public/login"
+          var splitted = data.split(":");
+          var api_token = splitted[1];
+          localStorage.setItem("api_token",api_token);
+          console.log(api_token);
+          if (splitted[0] == "Ok.Token") {
+                    //window.location.href = "http://localhost/Cardmarket/public/inicio"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }

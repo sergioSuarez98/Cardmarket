@@ -63,10 +63,20 @@
   <a class="active" href="#home">Home</a>
   <a href="#news">Buscar carta</a>
   <a href="registro">Registrarse</a>
-  <a href="#about">Logear</a>
+  <a href="login">Logear</a>
 </div>
    </div>
-   
+
+    <button onclick="getToken()">Mostrar token</button>
+
+  <script>
+  function getToken(){
+    var api_token = localStorage.getItem('api_token');
+    console.log(api_token);
+    document.body.innerHTML += "<h2>"+api_token+"</h2>";
+
+  }
+  </script> 
     
 </body>
 </html>
