@@ -81,15 +81,16 @@ class UserController extends Controller
         if($user){
         // Si hay un json, crear el soldado
         if(Hash::check($data->password,$user->password)) {
-                $response = "Usuario y contraseña correctos";
+                
                 
                 $user->api_token = $jwt;
+
             try{
             $user->save();
-                
+            $response = "Usuario y contraseña correctos. Token:".$jwt;    
             } catch(\Exception $e){
                 $response=$e->getMessage();
-                }
+            }
 
             }else{
                 $response="Contraseña Incorrecta";
