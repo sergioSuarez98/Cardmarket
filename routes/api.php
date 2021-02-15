@@ -29,7 +29,7 @@ Route::post('/users/admin/{id}', [UserController::class, 'makeAdmin']);
 Route::post('/users/forgotPassword', [UserController::class, 'forgotPassword']);
 
 
-Route::post('/cards/create', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
+Route::post('/cards/create/{api_token}', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
 Route::post('/cards/update/{id}', [CardController::class, 'updateCard'])->middleware(EnsureTokenIsValid::class);
 
 Route::get('/cards/buy', [CardController::class, 'buyCard']);

@@ -19,7 +19,7 @@ class UserController extends Controller
 
     	$response="";
 
-
+        
     	// Leer el contenido de la petición
     	$data = $request->getContent();
 

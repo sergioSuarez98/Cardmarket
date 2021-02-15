@@ -29,3 +29,8 @@ Route::get('/data', function () {
 Route::get('/no-authorized', function () {
     return "Que te follen";
 });
+//Route::post('/user','AjaxController@user');
+Route::get('ajax',function() {
+   return view('message');
+});
+Route::post('/getmsg','AjaxController@index');

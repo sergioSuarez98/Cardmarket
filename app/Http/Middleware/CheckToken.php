@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Helpers\MyJWT;
+use \Firebase\JWT\JWT;
 
 
 class CheckToken
@@ -19,12 +21,7 @@ class CheckToken
   public function handle($request, Closure $next)
     {
 
-        /*$data = $request->getContent();
 
-        // Decodificar el json
-        $data = json_decode($data);
-        echo $data->token;*/
-        //echo $request->token;
         if($request->token){
 
             $key = MyJWT::getKey();
@@ -32,7 +29,7 @@ class CheckToken
             $headers = getallheaders();
 
             $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
-            
+
             if($decoded){
                 //si el usuario es admin entra a la ruta de la api
                 if($decoded->role == "Individual" || $decoded->role == "Profesional"){
@@ -45,8 +42,10 @@ class CheckToken
             abort(403,"Token Erroneo");
         }
 
-        
 
-       
+
+
     }
-}
+} }
+
+?>

@@ -30,8 +30,8 @@ class CollectionController extends Controller
     	// Decodificar el json
     	$data = json_decode($data);
         $key = MyJWT::getKey();
-       $headers = getallheaders();
-       $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+        $headers = getallheaders();
+        $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	
     	if($data && $decoded->id) {
     		$collection = new Collection();
