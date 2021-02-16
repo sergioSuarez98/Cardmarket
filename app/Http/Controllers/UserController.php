@@ -27,31 +27,63 @@ class UserController extends Controller
     	$data = json_decode($data);
 
     	// Si hay un json, crear el soldado
-    	if($data) {
-    		$user = new User();
+    	if(isset($data->username)) {
 
-    		//Validar que el rol del usuario no sea admin de primeras
-    		
-
-    		$user->username = $data->username;
-    		$user->password = Hash::make($data->password);
-    		$user->email = $data->email;
-    		$user->role = $data->role;
-    		
-			try{
-				$user->save();
-				$response="OK";
-			} catch(\Exception $e){
-			    $response=$e->getMessage();
-				}
+            $userExist = User::where('username',$data->username)->get()->first();
+            
+            if(isset($userExist)){
+            
+            
+    		 $response="Ya existe usuario";
 
     		
-    		
+    		}else {
+            
+            $emailExist = User::where('email',$data->email)->get()->first();
+            if(isset($emailExist)){
+            
+            
+                $response="Ya existe el email";
+   
+               
+               }else {
 
-    		
+                if($data->password != ""){
+
+                if($data->role == "Individual" || $data->role == "Profesional" || $data->role == "Admin" ){
+                $user = new User();
+
+                //Validar que el rol del usuario no sea admin de primeras
+                
+                
+                $user->username = $data->username;
+                $user->password = Hash::make($data->password);
+                $user->email = $data->email;
+                $user->role = $data->role;
+                
+                try{
+                    $user->save();
+                    $response="OK";
+                } catch(\Exception $e){
+                    $response=$e->getMessage();
+                    }
+
+                }else{
+                    $response="Rol no valido";
+                }
+
+                } else {
+                    $response="Completa la contraseña";
+                }
+                }
+
+            }
+
+        
     		
     	}else{
     		$response="No data";
+            
     	}
 
     	return response($response);
@@ -69,19 +101,23 @@ class UserController extends Controller
 
         // Leer el contenido de la petición
         $data = $request->getContent();
-
+        
         // Decodificar el json
         $data = json_decode($data);
-        $user = User::Where('username', $data->username)->get()->first();
-        $payload = MyJWT::generatePayload($user);
-        $key = MyJWT::getKey();
-
-        $jwt = JWT::encode($payload, $key);
+        
        
+      
+        if(isset($data->username)){
+            
+            $user = User::Where('username', $data->username)->get()->first();
+            
         if($user){
-        // Si hay un json, crear el soldado
+        // Si hay un json, crear el soldado$payload = 
+           
         if(Hash::check($data->password,$user->password)) {
-                
+           $payload=MyJWT::generatePayload($user);
+            $key = MyJWT::getKey();
+            $jwt = JWT::encode($payload, $key);
                 
                 $user->api_token = $jwt;
 
@@ -100,7 +136,9 @@ class UserController extends Controller
             $response="Username no valido";
         }
             
-            
+    }else{
+            $response="No data";
+        }    
       
         return response($response);
 
@@ -153,6 +191,8 @@ class UserController extends Controller
 
         // Decodificar el json
         $data = json_decode($data);
+
+        if(isset($data->email)){
         $user = User::where('email',$data->email)->get()->first();
 
         if($user) {
@@ -174,7 +214,9 @@ class UserController extends Controller
                 $response="No se encuentra user";
             }
             
-
+        }else{
+    $response="No data";
+}
         return response($response);
 
     }

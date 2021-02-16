@@ -29,6 +29,7 @@ class EnsureTokenIsValid
             $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
             echo $decoded->role;
             if($decoded){
+                
                 //si el usuario es admin entra a la ruta de la api
                 if($decoded->role == "Admin"){
                     return $next($request);

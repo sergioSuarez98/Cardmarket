@@ -26,12 +26,21 @@ class SaleController extends Controller
 
     	// Decodificar el json
     	$data = json_decode($data);
-    	$cards = Card::Where('name', $data->name)->get();
-       
+    	
+		$key = MyJWT::getKey();
+		$headers = getallheaders();
+		
+		$decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	//echo $cards;
     	// Si hay un json, crear el soldado
-    	if($cards) {
-
+		if($data){
+			$cards = Card::Where('name', $data->name)->get();
+			for ($i=0; $i <count($cards) ; $i++){
+			echo $cards[$i];
+	
+			}
+    	if(!$cards->empty()) {
+			echo "entra al if";
     	for ($i=0; $i <count($cards) ; $i++){
     		$response[$i] = [
             "id" => $cards[$i]->id,
@@ -46,6 +55,9 @@ class SaleController extends Controller
     		$response="No hay carta con ese nombre";
     	}
 
+	}else{
+		$response="No data";
+	}
     		//Validar que el rol del usuario no sea admin de primeras
     		
     	return response($response);
@@ -56,7 +68,7 @@ class SaleController extends Controller
     /**
      * Crea una venta en funcion del id de la carta que se desea.
      */
-    public function createSale(Request $request, $card_id,$token)
+    public function createSale(Request $request, $card_id)
     {
 
     	$response="";

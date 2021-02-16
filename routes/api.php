@@ -29,13 +29,13 @@ Route::post('/users/admin/{id}', [UserController::class, 'makeAdmin']);
 Route::post('/users/forgotPassword', [UserController::class, 'forgotPassword']);
 
 
-Route::post('/cards/create/{api_token}', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
+Route::post('/cards/create', [CardController::class, 'createCard'])->middleware(EnsureTokenIsValid::class);
 Route::post('/cards/update/{id}', [CardController::class, 'updateCard'])->middleware(EnsureTokenIsValid::class);
 
 Route::get('/cards/buy', [CardController::class, 'buyCard']);
 
 Route::get('/sales/find', [SaleController::class, 'findCard'])->middleware(CheckToken::class);
-Route::post('/sales/sell/{id}', [SaleController::class, 'createSale'])->middleware(CheckToken::class);
+Route::post('/sales/sell/{id}', [SaleController::class, 'createSale']);//->middleware(CheckToken::class);
 
 Route::post('/collections/create', [CollectionController::class, 'createCollection'])->middleware(EnsureTokenIsValid::class);
 Route::post('/collections/update/{id}', [CollectionController::class, 'updateCollection'])->middleware(EnsureTokenIsValid::class);

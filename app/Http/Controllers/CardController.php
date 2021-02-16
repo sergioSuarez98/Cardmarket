@@ -16,7 +16,7 @@ class CardController extends Controller
      * Funcion que crea una carta, si no existe la coleccion la crea, solo con su nombre, y si existe añade la carta a ella. Tambien autocompleta 
      la tabla intermedia
      */
-     public function createCard(Request $request,$api_token)
+     public function createCard(Request $request)
      {
 
          $response="";
@@ -31,19 +31,22 @@ class CardController extends Controller
          $data = json_decode($data);
 
        
-
-         if($data) {
-          $card = new Card();
-    		//Validar que el rol del usuario no sea admin de primeras
+        if($data){
+         if(!empty($data->name) && !empty($data->collection)) {          
+            $card = new Card();
+    	//Validar que el rol del usuario no sea admin de primeras
           $collection = Collection::where('name', $data->collection)->get()->first();
-          $user = User::where('api_token',$api_token)->get()->first();
+          $key = MyJWT::getKey();
+          $headers = getallheaders();
+          
+          $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
 
-          if($collection){
+          if($collection && $decoded->id){
 
            $card->name = $data->name;
            $card->description = $data->description;
            $card->collection=$data->collection;
-           $card->user_id=$user->id;
+           $card->user_id=$decoded->id;;
 
            try{
             $card->save();
@@ -64,7 +67,7 @@ class CardController extends Controller
      $card->name = $data->name;
      $card->description = $data->description;
      $card->collection=$data->collection;
-     $card->user_id=$user->id;
+     $card->user_id=$decoded->id;;
      try{
         $card->save();
         $collection->save();
@@ -80,9 +83,11 @@ class CardController extends Controller
     $cardCollection->save(); 
 }
 }else{
-  $response="No data";
+  $response="Invalid data";
 }
-
+}else{
+    $response="JSON invalido";
+}
 return response($response);
 
 }
@@ -115,14 +120,15 @@ public function buyCard(Request $request)
 
             for ($i=0; $i <count($cards) ; $i++){
                 echo "entra al for\n";
-                if(empty($cards[$i]->sale)){
+                echo $cards[$i]->sale;
+                if(!$cards[$i]->sale->empty()){
                     echo "Entra al if de sale ";
                    
                     for ($j=0; $j <count($cards[$i]->sale) ; $j++) {  
                     
                      echo "El id del creador es: ".$cards[$i]->sale[$j]->user_id."\n";
                     $idCreador= $cards[$i]->sale[$j]->user_id;
-                //echo $idCreador;
+                
                     $userCreador = User::where('id',$idCreador)->get()->first();
                      //echo "La carta es: ".$cards[$i];
                     echo $cards[$i]->name;
@@ -163,6 +169,8 @@ return response($response);
 
 }   
 
+
+
 /**
  * Update de las cartas que se crean desde la coleccion
  */
@@ -175,6 +183,7 @@ public function updateCard(Request $request, $id)
 
 
         // Si hay un libro, actualizar el libro
+       
     if($card) {
 
             // Leer el contenido de la petición
@@ -188,7 +197,7 @@ public function updateCard(Request $request, $id)
 
 
 
-            $card->description = (isset($data->description ) ? $data->description  : $collection->description );
+            $card->description = (isset($data->description ) ? $data->description  : $card->description );
 
 
             try{
@@ -198,11 +207,13 @@ public function updateCard(Request $request, $id)
                 $response=$e->getMessage();
             }
         } else {
-            $response = "No card";
+            $response = "No data";
         }
 
 
 
+    }else{
+        $response = "No card";
     }
 
     return response()->json($response);
