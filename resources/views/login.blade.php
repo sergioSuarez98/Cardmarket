@@ -106,18 +106,7 @@
   margin-left: 10vh;
 }
 </style>
-<script>
- function getMessage() {
-  $.ajax({
-   type:'POST',
-   url:'/getmsg',
-   data:'_token = <?php echo csrf_token() ?>',
-   success:function(data) {
-    $("#msg").html(data.msg);
-  }
-});
-}
-</script>
+
 </head>
 <body>
   <div class="header">
@@ -166,7 +155,7 @@
         
       }
 
-      $.post("http://localhost/Cardmarket/public/api/users/login",
+      $.post("http://localhost:8888/Cardmarket/public/api/users/login",
         JSON.stringify(user)
         ,
 
@@ -177,7 +166,7 @@
           localStorage.setItem("api_token",api_token);
           console.log(api_token);
           if (splitted[0] == "Ok.Token") {
-                    //window.location.href = "http://localhost/Cardmarket/public/inicio"
+                    window.location.href = "http://localhost:8888/Cardmarket/public/inicio"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }

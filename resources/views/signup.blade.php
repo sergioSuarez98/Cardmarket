@@ -181,7 +181,7 @@
         role: $role
       }
 
-      $.post("http://localhost/Cardmarket/public/api/users/create",
+      $.post("http://localhost:8888/Cardmarket/public/api/users/create",
         JSON.stringify(user)
         ,
 
@@ -190,7 +190,7 @@
           var splitted = data.split(" ");
 
           if (splitted[0] == "OK") {
-                    window.location.href = "http://localhost/Cardmarket/public/login"
+                    window.location.href = "http://localhost:8888/Cardmarket/public/login"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }

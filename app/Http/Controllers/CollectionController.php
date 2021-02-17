@@ -19,80 +19,106 @@ class CollectionController extends Controller
      la tabla intermedia
      */
 
-    	$response="";
+     $response="";
 
-    	$card_id=0;
-    	$collection_id=0;
+     $card_id=0;
+     $collection_id=0;
 
     	// Leer el contenido de la petición
-    	$data = $request->getContent();
+     $data = $request->getContent();
 
     	// Decodificar el json
-    	$data = json_decode($data);
-        $key = MyJWT::getKey();
-        $headers = getallheaders();
-        $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
-    	
-    	if($data && $decoded->id) {
-    		$collection = new Collection();
+     $data = json_decode($data);
+     $key = MyJWT::getKey();
+     $headers = getallheaders();
+     $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
+
+
+
+     if($data && $decoded->id) {
+      $collection = new Collection();
     		//Validar que el rol del usuario no sea admin de primeras
-    		$card = Card::where('name', $data->card)->get()->first();
-    		
-    		if($card){
 
-    			$collection->name = $data->name;
-    			$collection->creation_date = $data->date;
-    			$collection->icon=$data->icon;
-    			
+      if($data->name != ""){
 
-    			try{
-    				$collection->save();
-    				$collection_id=$collection->id;
-    				$response="OK";
-    			} catch(\Exception $e){
-    				$response=$e->getMessage();
-    			}
+        if ($data->icon != "") {
 
-    			$cardCollection = new cardCollection();
-    			$cardCollection->card_id =$card->id;
-    			$cardCollection->collection_id =$collection_id;
-				$cardCollection->save();
-    		}else{
+            if ($data->date != "") {
 
-    			$card= new Card();
-    			$card->name = $data->card;
-    			$card->user_id=$decoded->id;
-    			$card->collection = $data->name;
-    			$collection->name = $data->name;
-    			$collection->creation_date = $data->date;
-    			$collection->icon=$data->icon;
-    			
-    			try{
-    				$card->save();
-    				$collection->save();
-    				$card_id=$card->id;
-    				$collection_id=$collection->id;
-    				$response="OK";
-    			} catch(\Exception $e){
-    				$response=$e->getMessage();
-    			}
-    			$cardCollection = new cardCollection();
-    			$cardCollection->card_id =$card_id;
-    			$cardCollection->collection_id = $collection->id; 
-				$cardCollection->save(); 
-    		}
-    	}else{
-    		$response="No data";
-    	}
+                if ($data->card) {
 
-    	return response($response);
 
+                  $card = Card::where('name', $data->card)->get()->first();
+
+                  if($card){
+
+                     $collection->name = $data->name;
+                     $collection->creation_date = $data->date;
+                     $collection->icon=$data->icon;
+
+
+                     try{
+                        $collection->save();
+                        $collection_id=$collection->id;
+                        $response="OK";
+                    } catch(\Exception $e){
+                        $response=$e->getMessage();
+                    }
+
+                    $cardCollection = new cardCollection();
+                    $cardCollection->card_id =$card->id;
+                    $cardCollection->collection_id =$collection_id;
+                    $cardCollection->save();
+                }else{
+
+                 $card= new Card();
+                 $card->name = $data->card;
+                 $card->user_id=$decoded->id;
+                 $card->collection = $data->name;
+                 $collection->name = $data->name;
+                 $collection->creation_date = $data->date;
+                 $collection->icon=$data->icon;
+
+                 try{
+                    $card->save();
+                    $collection->save();
+                    $card_id=$card->id;
+                    $collection_id=$collection->id;
+                    $response="OK";
+                } catch(\Exception $e){
+                    $response=$e->getMessage();
+                }
+                $cardCollection = new cardCollection();
+                $cardCollection->card_id =$card_id;
+                $cardCollection->collection_id = $collection->id; 
+                $cardCollection->save(); 
+            }
+
+        }else{
+
+            $response="No card";
+        }
+    }else{
+        $response="No date";
     }
+}else{
+    $response="No icon";
+}
+}else{
+    $response="No collection name";
+}
+}else{+
+  $response="No data";
+}
+
+return response($response);
+
+}
     /**
      * Update de las colecciones creadas al crear cartas.
      */
     public function updateCollection(Request $request, $id) 
-     {
+    {
         $response="";
 
         //Buscar el libro por id
@@ -100,7 +126,7 @@ class CollectionController extends Controller
         
 
         // Si hay un libro, actualizar el libro
-        if($collection) {
+        if($collection != "") {
 
             // Leer el contenido de la petición
             $data = $request->getContent();
@@ -111,11 +137,11 @@ class CollectionController extends Controller
 
             if($data){
 
-               
+
                 $collection->creation_date = (isset($data->date) ? $data->date : $collection->date);
-               	$collection->icon = (isset($data->icon) ? $data->icon : $collection->icon);
-               
-               
+                $collection->icon = (isset($data->icon) ? $data->icon : $collection->icon);
+
+
                 try{
                     $collection->save();
                     $response="OK";
@@ -123,11 +149,13 @@ class CollectionController extends Controller
                     $response=$e->getMessage();
                 }
             } else {
-                $response = "No collection";
+                $response = "No data";
             }
 
             
             
+        }else{
+            $response = "No collection";
         }
 
         return response()->json($response);

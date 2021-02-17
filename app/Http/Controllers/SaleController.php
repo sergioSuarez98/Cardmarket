@@ -35,11 +35,8 @@ class SaleController extends Controller
     	// Si hay un json, crear el soldado
 		if($data){
 			$cards = Card::Where('name', $data->name)->get();
-			for ($i=0; $i <count($cards) ; $i++){
-			echo $cards[$i];
-	
-			}
-    	if(!$cards->empty()) {
+			
+    	if(count($cards)>0) {
 			echo "entra al if";
     	for ($i=0; $i <count($cards) ; $i++){
     		$response[$i] = [
@@ -84,7 +81,10 @@ class SaleController extends Controller
        $headers = getallheaders();
        $decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	// Si hay un json, crear el soldado
-    	if($card && $data) {
+
+       if($data){
+
+    	if($card) {
 
     	
 
@@ -98,8 +98,8 @@ class SaleController extends Controller
 
 
     		try{
-            $sale->save();
-           
+            $sale->save(); 
+            $response = "OK";
             } catch(\Exception $e){
                 $response=$e->getMessage();
                 }
@@ -112,6 +112,11 @@ class SaleController extends Controller
     	}else{
     		$response="No hay carta con ese nombre";
     	}
+
+        }else{
+            $response="No data";
+        }
+
     	return response($response);
 
     }
