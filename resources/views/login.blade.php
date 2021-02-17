@@ -7,115 +7,18 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,700&display=swap');
-
-    *{
-      box-sizing: border-box;
-    }
-    body{
-      margin: auto;
-      background-color: #4CAF50;
-    }
-    h1{
-      font-family: 'Roboto'
-    }
-    .header {
-      padding: 60px;
-      text-align: center;
-      background: #1abc9c;
-      color: white;
-      font-size: 30px;
-    }
-
-    /* Add a black background color to the top navigation */
-    .topnav {
-      background-color: #333;
-      overflow: hidden;
-
-    }
-
-    /* Style the links inside the navigation bar */
-    .topnav a {
-      float: left;
-      color: #f2f2f2;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-size: 17px;
-    }
-
-    /* Change the color of links on hover */
-    .topnav a:hover {
-      background-color: #ddd;
-      color: black;
-    }
-
-    /* Add a color to the active/current link */
-    .topnav a.active {
-      background-color: #4CAF50;
-      color: white;
-    }
-    form {
-      /* Center the form on the page */
-      margin: 0 auto;
-      width: 400px;
-      /* Form outline */
-      padding: 1em;
-      border: 1px solid #CCC;
-      border-radius: 1em;
-    }
-
-    
-    label {
-      /* Uniform size & alignment */
-      display: inline-block;
-      width: 90px;
-      text-align: right;
-    }
-
-
-
-
-    input:focus,
-    textarea:focus {
-      /* Additional highlight for focused elements */
-      border-color: #000;
-    }
-
-    textarea {
-      /* Align multiline text fields with their labels */
-      vertical-align: top;
-
-      /* Provide space to type some text */
-      height: 5em;
-    }
-
-    .button {
-      /* Align buttons with the text fields */
-      padding-left: 90px; /* same size as the label elements */
-    }
-
-    button {
-  /* This extra margin represent roughly the same space as the space
-  between the labels and their text fields */
-  margin-left: .5em;
-}
-#button{
-  width: 70px;
-  margin-left: 10vh;
-}
-</style>
+  <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
 
 </head>
 <body>
-  <div class="header">
+<div class="header">
     <h1>Cardmarket</h1>
     <div class="topnav">
       <a  href="inicio">Home</a>
-      <a href="#news">Buscar carta</a>
+      <a href="search">Buscar carta</a>
       <a href="registro">Registrarse</a>
-      <a href="active">Logear</a>
+      <a class="active">Logear</a>
+      <a href="restore">Recuperar Contraseña</a>
     </div>
   </div>
   <h1 class="display-2">Log In</h1>
@@ -155,7 +58,7 @@
         
       }
 
-      $.post("http://localhost:8888/Cardmarket/public/api/users/login",
+      $.post("http://localhost/Cardmarket/public/api/users/login",
         JSON.stringify(user)
         ,
 
@@ -166,7 +69,7 @@
           localStorage.setItem("api_token",api_token);
           console.log(api_token);
           if (splitted[0] == "Ok.Token") {
-                    window.location.href = "http://localhost:8888/Cardmarket/public/inicio"
+                    window.location.href = "http://localhost/Cardmarket/public/inicio"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }
