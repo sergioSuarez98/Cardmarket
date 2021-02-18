@@ -7,7 +7,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
+  <link rel="stylesheet" href="http://localhost:8888/Cardmarket/resources/css/app.css">
 
 </head>
 <body>
@@ -22,14 +22,14 @@
     </div>
   </div>
   <h1 class="display-2">Log In</h1>
-  <form method="post">        
+  <form method="post">
 
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Username</label>
       <input id="username" type="text" name="username" class="form-control-sm" id="exampleFormControlInput1" placeholder="name@example.com">
     </div>
 
-  
+
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Password</label>
       <input id="password" type="password" name="password" class="form-control-sm" id="exampleFormControlInput1" >
@@ -43,37 +43,37 @@
 
   <script>
     $("#enviar").click(function(e){
-      e.preventDefault(); 
+      e.preventDefault();
       console.log("Boton pulsado")
 
       $username = $('#username').val();
-   
+
       $password = $('#password').val();
-     
-      var user = {   
+
+      var user = {
 
         username: $username,
-      
+
         password: $password,
-        
+
       }
 
-      $.post("http://localhost/Cardmarket/public/api/users/login",
+      $.post("http://localhost:8888/Cardmarket/public/api/users/login",
         JSON.stringify(user)
         ,
 
         function(data, status){
-          
+
           var splitted = data.split(":");
           var api_token = splitted[1];
           localStorage.setItem("api_token",api_token);
           console.log(api_token);
           if (splitted[0] == "Ok.Token") {
-                    window.location.href = "http://localhost/Cardmarket/public/inicio"
+                    window.location.href = "http://localhost:8888/Cardmarket/public/inicio"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }
-          
+
       });
     });
   </script>

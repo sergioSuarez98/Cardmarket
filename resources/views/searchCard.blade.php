@@ -7,9 +7,9 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
+  <link rel="stylesheet" href="http://localhost:8888/Cardmarket/resources/css/app.css">
 
-</script>
+
 </head>
 <body>
 <div class="header">
@@ -17,23 +17,23 @@
     <div class="topnav">
       <a  href="inicio">Home</a>
       <a class="active">Buscar carta</a>
-      <a href="active">Registrarse</a>
+      <a href="registro">Registrarse</a>
       <a href="login">Logear</a>
       <a href="restore">Recuperar Contraseña</a>
     </div>
   </div>
   <h1 class="display-2">Buscar Carta</h1>
-  <form >        
+  <form >
 
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Nombre carta</label>
       <input id="name" type="text" name="name" class="form-control-sm" id="exampleFormControlInput1" placeholder="Niebla">
     </div>
 
-    
+
 
     <div>
-    <input type="button" name="enviar" value="Buscar" id="search">
+    <input type="button" name="enviar" value="Buscar" id="v">
     </div>
 
   </form>
@@ -42,20 +42,25 @@
   <script>
          $("#search").click(function (e) {
 		    e.preventDefault();
-		    console.log("boton pulsado");
+
+
 		    $nombre = $('#name').val();
-		   
-		    var url = "http://localhost/Cardmarket/public/api/sales/find";
-            var card = { name: $nombre};
+            //$card = {"name":"cerdo"}
+		    var url = "http://localhost:8888/Cardmarket/public/api/sales/find/"+$nombre
+            //$json = JSON.stringify($card)
+            console.log("BOTON PULSADO");
 		     $.ajax({
+
 				url: url,
 				type: 'GET',
 				headers: {"api_token": localStorage.getItem('api_token')},
-                data: JSON.stringify(card);
+                //  data: $json,
+
 				success: function(data, status){
 					console.log(data);
-                    $name = $('#name').val();
-    				var table = '<table><tr><th>id</th><th>Card Name</th><th>Description</th><th>Collection</th></tr>';
+                    alert("Data: " + data + "\nStatus: " + status);
+
+    				var table = '<table><tr><th>id</th><th>Card Name</th><th>Description</th><th>Collection</th><th>nombre admin</th></tr>';
     				for (var i in data) {
 					    table += '<tr>';
 					    for (var j in data[i]) {
@@ -67,11 +72,10 @@
 					document.body.innerHTML += table;
     			}
   			})
-  			
+
 		});
-      </script>
 
-
+  </script>
 
 </body>
 </html>

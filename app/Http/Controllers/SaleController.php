@@ -15,7 +15,7 @@ class SaleController extends Controller
     /**
      * Busca una carta por su nombre
      */
-    public function findCard(Request $request)
+    public function findCard(Request $request,$cardName)
     {
 
     	$response="";
@@ -25,17 +25,17 @@ class SaleController extends Controller
     	$data = $request->getContent();
 
     	// Decodificar el json
-    	$data = json_decode($data);
-    	
+    	//$data = json_decode($data);
+
 		$key = MyJWT::getKey();
 		$headers = getallheaders();
-		
+
 		$decoded = JWT::decode($headers['api_token'], $key, array('HS256'));
     	//echo $cards;
     	// Si hay un json, crear el soldado
-		if($data){
-			$cards = Card::Where('name', $data->name)->get();
-			
+		//if($data){
+			$cards = Card::Where('name', $cardName)->get();
+
     	if(count($cards)>0) {
 			echo "entra al if";
     	for ($i=0; $i <count($cards) ; $i++){
@@ -52,16 +52,16 @@ class SaleController extends Controller
     		$response="No hay carta con ese nombre";
     	}
 
-	}else{
+	/*}else{
 		$response="No data";
-	}
+	}*/
     		//Validar que el rol del usuario no sea admin de primeras
-    		
+
     	return response($response);
 
     }
 
- 
+
     /**
      * Crea una venta en funcion del id de la carta que se desea.
      */
@@ -69,7 +69,7 @@ class SaleController extends Controller
     {
 
     	$response="";
- 
+
 
     	// Leer el contenido de la petición
     	$data = $request->getContent();
@@ -86,7 +86,7 @@ class SaleController extends Controller
 
     	if($card) {
 
-    	
+
 
     		if($decoded->id){
     			$sale = new Sale();
@@ -98,7 +98,7 @@ class SaleController extends Controller
 
 
     		try{
-            $sale->save(); 
+            $sale->save();
             $response = "OK";
             } catch(\Exception $e){
                 $response=$e->getMessage();
@@ -107,7 +107,7 @@ class SaleController extends Controller
     			$response = "No user";
     		}
 
-    	
+
 
     	}else{
     		$response="No hay carta con ese nombre";
@@ -121,9 +121,9 @@ class SaleController extends Controller
 
     }
 
-    	
-    		
-    	
-    
+
+
+
+
 
 }

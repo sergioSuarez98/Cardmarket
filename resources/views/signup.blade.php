@@ -7,7 +7,7 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
+  <link rel="stylesheet" href="http://localhost:8888/Cardmarket/resources/css/app.css">
 
 </script>
 </head>
@@ -23,7 +23,7 @@
     </div>
   </div>
   <h1 class="display-2">Sign Up</h1>
-  <form method="POST">        
+  <form method="POST">
 
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Username</label>
@@ -59,14 +59,14 @@
 
   <script>
     $("#enviar").click(function(e){
-      e.preventDefault(); 
+      e.preventDefault();
       console.log("Boton pulsado")
 
       $username = $('#username').val();
       $email = $('#email').val();
       $password = $('#password').val();
       $role = $('#role').val();
-      var user = {   
+      var user = {
 
         username: $username,
         email: $email,
@@ -74,20 +74,20 @@
         role: $role
       }
 
-      $.post("http://localhost/Cardmarket/public/api/users/create",
+      $.post("http://localhost:8888/Cardmarket/public/api/users/create",
         JSON.stringify(user)
         ,
 
         function(data, status){
-          
+
           var splitted = data.split(" ");
 
           if (splitted[0] == "OK") {
-                    window.location.href = "http://localhost/Cardmarket/public/login"
+                    window.location.href = "http://localhost:8888/Cardmarket/public/login"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }
-          
+
       });
     });
   </script>

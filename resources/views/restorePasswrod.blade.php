@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
+    <link rel="stylesheet" href="http://localhost:8888/cardmarket/resources/css/app.css">
 </head>
 <body>
 <div class="header">
@@ -30,7 +30,7 @@
       <input id="email" type="text" name="email" class="form-control-sm" id="exampleFormControlInput1" placeholder="example@gmail.com">
     </div>
     <div class="mb-3">
-     
+
      <input type="button" name="enviar" value="Buscar" id="restore">
     </div>
 
@@ -38,17 +38,17 @@
 
   <script>
     $("#restore").click(function(e){
-      e.preventDefault(); 
-      
+      e.preventDefault();
+
 
       $email = $('#email').val();
-   
-      
-     
-      var user = {   
+
+
+
+      var user = {
 
         email: $email
-   
+
       }
 
       $.post("http://localhost/Cardmarket/public/api/users/forgotPassword",
@@ -56,22 +56,22 @@
         ,
 
         function(data, status){
-          
+
           var splitted = data.split(":");
-          
-          
+
+
           if (splitted[0] == "Ok") {
-                    window.location.href = "http://localhost/Cardmarket/public/login"
+                    window.location.href = "http://localhost:8888/Cardmarket/public/login"
                 }else{
                     alert("Data: " + data + "\nStatus: " + status);
                 }
-          
+
       });
     });
   </script>
 
 
 
-  
+
 </body>
 </html>

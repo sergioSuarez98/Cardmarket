@@ -34,7 +34,7 @@ Route::post('/cards/update/{id}', [CardController::class, 'updateCard'])->middle
 
 Route::get('/cards/buy', [CardController::class, 'buyCard']);
 
-Route::get('/sales/find', [SaleController::class, 'findCard'])->middleware(CheckToken::class);
+Route::get('/sales/find/{cardName}', [SaleController::class, 'findCard'])->middleware(CheckToken::class);
 Route::post('/sales/sell/{id}', [SaleController::class, 'createSale']);//->middleware(CheckToken::class);
 
 Route::post('/collections/create', [CollectionController::class, 'createCollection'])->middleware(EnsureTokenIsValid::class);

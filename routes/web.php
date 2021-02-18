@@ -36,7 +36,9 @@ Route::get('/search', function () {
     return view('searchCard');
 });
 
-
+Route::get('/hola', function () {
+    return view('hola');
+});
 
 
 Route::get('/no-authorized', function () {

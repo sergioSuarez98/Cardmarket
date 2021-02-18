@@ -5,7 +5,7 @@
     <title>Cardmarket</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://localhost/cardmarket/resources/css/app.css">
+    <link rel="stylesheet" href="http://localhost:8888/Cardmarket/resources/css/app.css">
 
 </head>
 <body>
@@ -13,7 +13,7 @@
     <h1>Cardmarket</h1>
 <div class="topnav">
   <a class="active" href="#home">Home</a>
-  <a href="search">Buscar carta</a>
+  <a href="hola">Buscar carta</a>
   <a href="registro">Registrarse</a>
   <a href="login">Logear</a>
   <a href="restore">Recuperar Contraseña</a>
@@ -36,7 +36,7 @@
       <input id="collection" type="text" name="collection" class="form-control-sm" id="exampleFormControlInput1" placeholder="New magic 2021">
     </div>
     <div class="mb-3">
-     
+
      <input type="button" name="enviar" value="Buscar" id="createCard">
     </div>
 
@@ -50,17 +50,17 @@
   }*/
   $("#createCard").click(function (e) {
         e.preventDefault();
-        
+
         $name = $('#name').val();
         $description = $('#description').val();
         $collection = $('#collection').val();
-        $url = "http://localhost/Cardmarket/public/api/cards/create"
+        $url = "http://localhost:8888/Cardmarket/public/api/cards/create"
         var card = {name: $name, description: $description, collection: $collection}
         $.ajax({
         url: $url,
         type: 'POST',
         headers: {"api_token": localStorage.getItem('api_token')},
-        
+
         data: JSON.stringify(card),
         success: function(data, status){
           console.log(data);
@@ -68,14 +68,14 @@
               alert("Carta creada correctamente" + "\nStatus: " + status);
             }else{
             alert("Data: " + data + "\nStatus: " + status);
-              
+
             }
           }
         })
     });
 
-  </script> 
-  
-    
+  </script>
+
+
 </body>
 </html>
